@@ -1,7 +1,9 @@
 asgiref==3.5.0
 backports.zoneinfo==0.2.1
 Django==4.0.1
+django-base64field==1.0
 django-phonenumber-field==6.0.0
+django-rest-framework==0.1.0
 djangorestframework==3.13.1
 phonenumbers==8.12.41
 pyotp==2.6.0
