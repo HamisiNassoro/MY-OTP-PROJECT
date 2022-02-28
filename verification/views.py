@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import phoneModel
 import base64
+import os
+from twilio.rest import Client
 
 
 # This class returns the string needed to generate the key
@@ -31,7 +33,20 @@ class getPhoneNumberRegistered(APIView):
         key = base64.b32encode(keygen.returnValue(phone).encode())  # Key is generated
         OTP = pyotp.HOTP(key)  # HOTP Model for OTP is created
         print(OTP.at(Mobile.counter))
+ 
         # Using Multi-Threading send the OTP Using Messaging Services like Twilio or Fast2sms
+        if Mobile:
+            account_sid = 'ACb0c3a3b03d24b3bff6bc69adcf3c4e84'
+            auth_token = 'c9ce31c9645f6b0f5b63bd63d28bb9eb'
+            client = Client(account_sid, auth_token)
+
+            message = client.messages.create(
+                body=f"Dear {Mobile}, your OTP is {OTP.at(Mobile.counter)}",
+                from_='+19107189667',
+                to=f"{phone}",
+            )
+        print(message.sid)
+
         return Response({"OTP": OTP.at(Mobile.counter)}, status=200)  # Just for demonstration
 
     # This Method verifies the OTP
@@ -72,6 +87,19 @@ class getPhoneNumberRegistered_TimeBased(APIView):
         OTP = pyotp.TOTP(key,interval = EXPIRY_TIME)  # TOTP Model for OTP is created
         print(OTP.now())
         # Using Multi-Threading send the OTP Using Messaging Services like Twilio or Fast2sms
+
+        if Mobile:
+            account_sid = 'ACb0c3a3b03d24b3bff6bc69adcf3c4e84'
+            auth_token = 'c9ce31c9645f6b0f5b63bd63d28bb9eb'
+            client = Client(account_sid, auth_token)
+
+            message = client.messages.create(
+                body=f"Dear {Mobile}, your OTP is {OTP.at(Mobile.counter)}",
+                from_='+19107189667',
+                to=f"{phone}",
+            )
+        print(message.sid)
+
         return Response({"OTP": OTP.now()}, status=200)  # Just for demonstration
 
     # This Method verifies the OTP
